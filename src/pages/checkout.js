@@ -8,10 +8,7 @@ import { useSession } from "next-auth/react"
 import { selectTotal } from '../slices/basketSlice';
 
 import { loadStripe } from '@stripe/stripe-js';
-
-import axios from 'axios';
-
-const stripePromise = loadStripe(process.env.stripe_public_key); // use public key to allow you to get stripe account
+import { data } from 'autoprefixer';
 
 
 function checkout() {
@@ -20,33 +17,48 @@ function checkout() {
   const { data: session, status } = useSession()
   
 
-    const createCheckoutSession = async () => {
-    const stripe = await stripePromise;
+    // const createCheckoutSession = async () => {
+    // const stripe = await stripePromise;
      
-    // call the backend.. first install axios library
-    // const checkoutSession = await axios.post('/api/create-checkout-session' , {
-    //   // means make request to path /api/create-checkout-session and add these two info down
-    //   items: items,
-    //   email: session.user.email
-    // });
+    
+      // const checkoutSession =  await axios.post('/api/checkout_sessions' , 
+      //    {
+      //       items: items,
+      //       email: session.user.email
+      //   });
 
-      const checkoutSession = () => {
-        axios.post('/api/create-checkout-session' , {
-          items: items,
-           email: session.user.email
-        })
-      }
+    //     const result = stripe.redirectToCheckout({
+    //       sessionId: checkoutSession.data.id
+    //     })
 
-    // Redirect user To Stripe Checkout
-    const result = await stripe.redirectToCheckout({
-      sessionId: checkoutSession.data.id
-    })
+    //     if (result.error) alert(result.error.massage)
+        
+    //   };
 
-    if(result.error){
-      alert(result.error.message )
-    }
 
-  };
+ console.log(data)
+   
+
+  
+      const stripePromise = loadStripe(
+        process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+      );
+    
+      React.useEffect(() => {
+        // Check to see if this is a redirect back from Checkout
+        const query = new URLSearchParams(window.location.search);
+        if (query.get('success')) {
+          console.log('Order placed! You will receive an email confirmation.');
+        }
+    
+        if (query.get('canceled')) {
+          console.log('Order canceled -- continue to shop around and checkout when you’re ready.');
+        }
+      }, []);
+    
+
+
+
 
   return (
     <div className='bg-gray-100'>
@@ -99,12 +111,32 @@ function checkout() {
                 </span>
               </h2>
               
+              {/* <form action="/create-checkout-session" method='POST'>
               <button 
-              onClick={createCheckoutSession}
-              disabled={!session}
-              className={`button mt-2 ${!session && 'from-gray-300 to-gray-500 border-gray-200 text-gray-300 cursor-not-allowed'}`}>
+                 type="submit"      
+                 onClick={createCheckoutSession}
+                 disabled={!session}
+                className={`button mt-2 ${!session && 'from-gray-300 to-gray-500 border-gray-200 text-gray-300 cursor-not-allowed'}`}>
                 {!session ? 'Sign in to Checkout ' : 'Proceed to Checkout'}
               </button>
+              </form> */}
+
+
+                    
+            <form action="/api/checkout_sessions" method="POST">
+              <section>
+                <button 
+                type="submit" 
+                role="link"
+                disabled={!session}
+                className={`button mt-2 ${!session && 'from-gray-300 to-gray-500 border-gray-200 text-gray-300 cursor-not-allowed'}`}
+                >
+                {!session ? 'Sign in to Checkout ' : 'Proceed to Checkout'}
+                </button>
+              </section>
+            </form>
+
+              
               </>
             )
           }

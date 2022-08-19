@@ -49,7 +49,7 @@ function Header() {
               {session ? `  ${session.user.name} ` : 'Sign In'}
             
               
-              {session ?   <img  className='rounded-full w-8 ' src={session.user.image}  />  : null}
+              {session ?   <img  className='rounded-full w-8 ml-2' src={session.user.image}  />  : null}
           
             </p>
             <p className='font-extrabold md:text-sm'>account & Lists</p>

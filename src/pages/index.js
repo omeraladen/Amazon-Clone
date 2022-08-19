@@ -4,7 +4,11 @@ import Banner from "../component/Banner";
 import ProductFeed from "../component/ProductsFeed";
 
 
+
 export default function Home({ products }) {
+
+
+
   return (
     <div>
       <Head>
@@ -59,7 +63,8 @@ export default function Home({ products }) {
           </div>
       </div>
     <hr />
-  
+
+
    <div className="bg-gray-700 px-96 py-10 ">
    <img 
               
@@ -78,6 +83,10 @@ export default function Home({ products }) {
     </div>
   );
 }
+
+
+
+
 // GET >> https://fakestoreapi.com/products
 export async function getServerSideProps(context) {
   const products = await fetch('https://fakestoreapi.com/products').then(
